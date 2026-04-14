@@ -75,8 +75,8 @@ export default function Home() {
 
   const curriculum = [
     { step: "01", title: "캐릭터 기획", desc: "캐릭터 산업 동향 분석 + 이모티콘 기획 및 콘티 제작" },
-    { step: "02", title: "드로잉 기초", desc: "포토샵 기본 구성 + 펜 타블렛으로 디지털 드로잉" },
-    { step: "03", title: "일러스트 제작", desc: "클리핑 마스크, 브러쉬 툴 등 일러스트레이터 활용" },
+    { step: "02", title: "드로잉 기초", desc: "Adobe Photoshop 기본 구성 + 펜 타블렛으로 디지털 드로잉" },
+    { step: "03", title: "일러스트 제작", desc: "Adobe Illustrator 클리핑 마스크, 브러쉬 툴 등 전문 기능 활용" },
     { step: "04", title: "캐릭터 디자인", desc: "나만의 캐릭터 CI/BI 제작 및 브랜딩" },
     { step: "05", title: "이모티콘 제작", desc: "움직이는 이모티콘 제작 + 카카오 작가 등록" },
     { step: "06", title: "굿즈 & 창업", desc: "굿즈 제작·판매를 통한 창업 방법 실습" },
@@ -413,21 +413,27 @@ export default function Home() {
               viewport={{ once: true }}
             >
               <span className="inline-block bg-purple-100 text-purple-600 rounded-full px-4 py-2 text-sm font-700 mb-4">
-                🤖 AI 활용 수업
+                🎨 어도비 + AI 활용 수업
               </span>
               <h2 className="section-title text-gray-800 mb-6">
-                AI로 더 빠르게,<br />
-                <span className="gradient-text">더 창의적으로</span>
+                어도비 + AI로<br />
+                <span className="gradient-text">전문가처럼!</span>
               </h2>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="bg-blue-100 text-blue-700 text-sm font-700 px-3 py-1 rounded-full">Adobe Photoshop</span>
+                <span className="bg-orange-100 text-orange-700 text-sm font-700 px-3 py-1 rounded-full">Adobe Illustrator</span>
+                <span className="bg-purple-100 text-purple-700 text-sm font-700 px-3 py-1 rounded-full">AI 생성 툴</span>
+              </div>
               <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                최신 AI 도구를 활용하여 캐릭터 아이디어를 빠르게 시각화하고, 나만의 독창적인 이모티콘을 제작합니다. AI는 도구일 뿐, 창의력은 여러분의 것!
+                업계 표준 <strong>Adobe Photoshop & Illustrator</strong>로 전문 디자인 스킬을 쌓고, 최신 AI 도구로 창작 속도를 높이세요. 어도비부터 AI까지 한 번에 배웁니다!
               </p>
               <div className="space-y-3">
                 {[
+                  "Adobe Photoshop으로 디지털 드로잉 & 이모티콘 제작",
+                  "Adobe Illustrator로 캐릭터 CI/BI 브랜딩",
                   "AI로 캐릭터 아이디어 스케치 자동화",
                   "AI 보조 컬러링 및 스타일 적용",
                   "움직이는 이모티콘 AI 활용 제작",
-                  "카카오 이모티콘 심사 통과 노하우",
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-red-400 flex items-center justify-center text-white text-xs font-700 flex-shrink-0">
@@ -452,7 +458,7 @@ export default function Home() {
                 className="absolute -bottom-6 -right-6 rounded-2xl p-5 shadow-xl"
                 style={{ background: "linear-gradient(135deg, #FF6B6B, #FF8E53)", color: "white" }}
               >
-                <div className="text-2xl font-black">AI + 창의력</div>
+                <div className="text-xl font-black">Adobe + AI</div>
                 <div className="text-sm opacity-90">= 나만의 이모티콘</div>
               </div>
             </motion.div>
@@ -476,6 +482,11 @@ export default function Home() {
               기초부터 <span className="gradient-text">출시까지</span>
             </h2>
             <p className="text-gray-500 mt-3">240시간 체계적인 전문 교육과정</p>
+            <div className="flex flex-wrap justify-center gap-2 mt-3">
+              <span className="bg-blue-100 text-blue-700 text-xs font-700 px-3 py-1 rounded-full">Adobe Photoshop</span>
+              <span className="bg-orange-100 text-orange-700 text-xs font-700 px-3 py-1 rounded-full">Adobe Illustrator</span>
+              <span className="bg-purple-100 text-purple-700 text-xs font-700 px-3 py-1 rounded-full">AI 생성 툴</span>
+            </div>
           </motion.div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

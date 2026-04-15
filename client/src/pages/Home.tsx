@@ -1,101 +1,99 @@
 /**
- * DESIGN: FastCampus-grade Premium Dark EdTech Landing Page
- * Theme: Deep navy (#0A0E1A) + Coral (#FF5C3A) + Gold (#F5A623)
- * Font: Pretendard Variable (display) + Noto Sans KR (body)
- * Layout: Full-bleed dark sections, asymmetric hero, sticky nav
+ * DESIGN: "Forge" — Premium Conversion-Optimized EdTech Landing Page
+ * Philosophy: Every pixel earns its place. Urgency + Aspiration + Trust.
+ * Palette: Obsidian (#060810) + Coral (#FF4D2E) + Gold (#F5A623) + Ice (#E8F0FF)
+ * Typography: Pretendard Variable — 900 weight display, editorial hierarchy
+ * Layout: Full-bleed cinematic sections, asymmetric hero, sticky urgency bar
+ * Conversion: Countdown, social proof marquee, benefit stacking, sticky CTA
  */
 
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-// ── Asset URLs ─────────────────────────────────────────────────────────────
-const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/114049990/2NXYXQdjjZ9aMNwZdApGUP/hero-premium-J8huvoh8sjJ5btxk8PPpCo.webp";
-
+const APPLY_URL = "https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1";
+const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/114049990/2NXYXQdjjZ9aMNwZdApGUP/hero-v2-bZWBRmvBeRZdT5xBZFQZRK.webp";
+const BG_TEX = "https://d2xsxph8kpxj0f.cloudfront.net/114049990/2NXYXQdjjZ9aMNwZdApGUP/social-proof-bg-Lh44XV2cHgmRWnchKeFKxN.webp";
 
 // ── Animated Counter ───────────────────────────────────────────────────────
 function AnimatedNumber({ target, suffix = "" }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
   const motionVal = useMotionValue(0);
-  const spring = useSpring(motionVal, { stiffness: 80, damping: 20 });
+  const spring = useSpring(motionVal, { stiffness: 60, damping: 18 });
   const [display, setDisplay] = useState(0);
-
-  useEffect(() => {
-    if (inView) motionVal.set(target);
-  }, [inView, target, motionVal]);
-
-  useEffect(() => {
-    return spring.on("change", (v) => setDisplay(Math.round(v)));
-  }, [spring]);
-
+  useEffect(() => { if (inView) motionVal.set(target); }, [inView, target, motionVal]);
+  useEffect(() => spring.on("change", (v) => setDisplay(Math.round(v))), [spring]);
   return <span ref={ref}>{display.toLocaleString()}{suffix}</span>;
 }
 
-// ── Countdown Timer ────────────────────────────────────────────────────────
-function Countdown() {
+// ── Countdown ──────────────────────────────────────────────────────────────
+function Countdown({ compact = false }: { compact?: boolean }) {
   const deadline = new Date("2026-04-20T18:00:00+09:00").getTime();
   const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 });
-
   useEffect(() => {
     const tick = () => {
       const diff = Math.max(0, deadline - Date.now());
-      setTime({
-        d: Math.floor(diff / 86400000),
-        h: Math.floor((diff % 86400000) / 3600000),
-        m: Math.floor((diff % 3600000) / 60000),
-        s: Math.floor((diff % 60000) / 1000),
-      });
+      setTime({ d: Math.floor(diff / 86400000), h: Math.floor((diff % 86400000) / 3600000), m: Math.floor((diff % 3600000) / 60000), s: Math.floor((diff % 60000) / 1000) });
     };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
+    tick(); const id = setInterval(tick, 1000); return () => clearInterval(id);
   }, [deadline]);
 
-  const Box = ({ val, label }: { val: number; label: string }) => (
-    <div className="countdown-box">
-      <div className="text-2xl font-black text-primary-text tabular-nums">{String(val).padStart(2, "0")}</div>
-      <div className="text-xs text-muted-text mt-0.5 font-medium">{label}</div>
-    </div>
-  );
+  if (compact) {
+    return (
+      <span className="font-black tabular-nums" style={{ color: "var(--coral)" }}>
+        {String(time.d).padStart(2,"0")}일 {String(time.h).padStart(2,"0")}:{String(time.m).padStart(2,"0")}:{String(time.s).padStart(2,"0")}
+      </span>
+    );
+  }
 
   return (
     <div className="flex items-center gap-2">
-      <Box val={time.d} label="일" />
-      <span className="text-coral font-black text-xl">:</span>
-      <Box val={time.h} label="시간" />
-      <span className="text-coral font-black text-xl">:</span>
-      <Box val={time.m} label="분" />
-      <span className="text-coral font-black text-xl">:</span>
-      <Box val={time.s} label="초" />
+      {[{ v: time.d, l: "일" }, { v: time.h, l: "시간" }, { v: time.m, l: "분" }, { v: time.s, l: "초" }].map((item, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <div className="countdown-box">
+            <div className="text-2xl font-black tabular-nums" style={{ color: "var(--text-primary)" }}>{String(item.v).padStart(2, "0")}</div>
+            <div className="text-xs font-semibold mt-0.5" style={{ color: "var(--text-muted)" }}>{item.l}</div>
+          </div>
+          {i < 3 && <span className="text-xl font-black" style={{ color: "var(--coral)" }}>:</span>}
+        </div>
+      ))}
     </div>
   );
 }
 
-// ── Fade-in wrapper ────────────────────────────────────────────────────────
+// ── Fade-up wrapper ────────────────────────────────────────────────────────
 function FadeUp({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <motion.div initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+      className={className}>{children}</motion.div>
   );
 }
 
-// ── Main Component ─────────────────────────────────────────────────────────
+// ── Scroll Progress Bar ────────────────────────────────────────────────────
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  return (
+    <motion.div className="progress-bar" style={{ scaleX, transformOrigin: "0%" }} />
+  );
+}
+
+// ── Main ───────────────────────────────────────────────────────────────────
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const heroY = useTransform(scrollY, [0, 400], [0, 80]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const unsub = scrollY.on("change", (v) => setScrolled(v > 60));
+    return unsub;
+  }, [scrollY]);
+
+  const APPLY_LINK = APPLY_URL;
 
   const curriculum = [
     { step: "01", icon: "💡", title: "캐릭터 기획", desc: "캐릭터 산업 동향 분석, 이모티콘 기획 및 콘티 제작" },
@@ -108,18 +106,11 @@ export default function Home() {
     { step: "08", icon: "💼", title: "취업 준비", desc: "이력서·자기소개서 작성 + 면접 코칭" },
   ];
 
-  const benefits = [
-    { icon: "₩", label: "수강료", value: "0원", sub: "전액 국비지원", color: "#FF5C3A" },
-    { icon: "💰", label: "훈련수당", value: "10만원", sub: "매월 지급", color: "#F5A623" },
-    { icon: "⏱", label: "교육시간", value: "240h", sub: "60일 집중과정", color: "#5BA4F5" },
-    { icon: "🏆", label: "취업수당", value: "추가지급", sub: "수료 후 6개월 내", color: "#7ED4A4" },
-  ];
-
   const tools = [
-    { name: "Adobe Photoshop", color: "#31A8FF", bg: "rgba(49,168,255,0.12)", desc: "디지털 드로잉 & 이모티콘 제작" },
-    { name: "Adobe Illustrator", color: "#FF9A00", bg: "rgba(255,154,0,0.12)", desc: "캐릭터 CI/BI 브랜딩" },
-    { name: "AI 생성 툴", color: "#B47FFF", bg: "rgba(180,127,255,0.12)", desc: "아이디어 즉시 시각화" },
-    { name: "펜 타블렛", color: "#7ED4A4", bg: "rgba(126,212,164,0.12)", desc: "전문 드로잉 실습" },
+    { abbr: "Ps", name: "Adobe Photoshop", color: "#31A8FF", bg: "rgba(49,168,255,0.1)", desc: "디지털 드로잉 & 이모티콘 제작의 업계 표준" },
+    { abbr: "Ai", name: "Adobe Illustrator", color: "#FF9A00", bg: "rgba(255,154,0,0.1)", desc: "캐릭터 CI/BI 브랜딩 & 벡터 일러스트" },
+    { abbr: "AI", name: "AI 생성 툴", color: "#B47FFF", bg: "rgba(180,127,255,0.1)", desc: "아이디어를 즉시 시각화하는 최신 AI 도구" },
+    { abbr: "🖊", name: "펜 타블렛", color: "#7ED4A4", bg: "rgba(126,212,164,0.1)", desc: "전문 드로잉 실습 장비 제공" },
   ];
 
   const faqs = [
@@ -129,163 +120,202 @@ export default function Home() {
     { q: "수료 후 어떤 직업을 가질 수 있나요?", a: "카카오·라인 이모티콘 작가, 캐릭터 디자이너, 굿즈 창업, 프리랜서 일러스트레이터 등 다양한 진로가 열립니다." },
   ];
 
-  const navLinks = [
-    { label: "혜택", href: "#benefits" },
-    { label: "커리큘럼", href: "#curriculum" },
-    { label: "도구", href: "#tools" },
-    { label: "FAQ", href: "#faq" },
+  const marqueeTags = [
+    "수강료 0원", "매월 10만원 수당", "Adobe 정규 교육", "AI 활용 수업",
+    "이모티콘 작가 등록", "국비지원 직업훈련", "취업성공수당", "캐릭터 디자이너",
+    "수강료 0원", "매월 10만원 수당", "Adobe 정규 교육", "AI 활용 수업",
+    "이모티콘 작가 등록", "국비지원 직업훈련", "취업성공수당", "캐릭터 디자이너",
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--navy)", color: "var(--text-primary)" }}>
+    <div style={{ backgroundColor: "var(--obsidian)", color: "var(--text-primary)", fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif" }}>
+      <ScrollProgress />
+
+      {/* ── STICKY TOP URGENCY BAR ─────────────────────────────────────────── */}
+      <div className="relative z-50 py-2.5 text-center text-sm font-bold"
+        style={{ background: "linear-gradient(90deg, var(--coral) 0%, #FF6B4A 50%, var(--gold) 100%)", color: "#fff" }}>
+        <span className="urgency-pulse inline-block w-2 h-2 rounded-full bg-white mr-2 align-middle opacity-90" />
+        접수 마감까지 <Countdown compact /> — 지금 바로 신청하세요!
+        <a href={APPLY_LINK} target="_blank" rel="noopener noreferrer"
+          className="ml-3 px-3 py-0.5 rounded-full text-xs font-black"
+          style={{ background: "rgba(0,0,0,0.25)", color: "#fff", textDecoration: "none" }}>
+          신청 →
+        </a>
+      </div>
 
       {/* ── STICKY NAV ─────────────────────────────────────────────────────── */}
-      <header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      <header className="sticky top-0 z-40 transition-all duration-300"
         style={{
-          backgroundColor: scrolled ? "rgba(10,14,26,0.95)" : "transparent",
-          backdropFilter: scrolled ? "blur(20px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
-        }}
-      >
+          backgroundColor: scrolled ? "rgba(6,8,16,0.92)" : "transparent",
+          backdropFilter: scrolled ? "blur(24px)" : "none",
+          borderBottom: scrolled ? "1px solid var(--ice-border)" : "none",
+        }}>
         <div className="container">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg" style={{ background: "linear-gradient(135deg, var(--coral), var(--gold))" }}>✨</div>
-              <span className="font-black text-sm tracking-tight" style={{ color: "var(--text-primary)" }}>이모티콘 디자이너</span>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base font-black"
+                style={{ background: "linear-gradient(135deg, var(--coral), var(--gold))", color: "#fff" }}>✨</div>
+              <div>
+                <div className="text-sm font-black leading-tight" style={{ color: "var(--text-primary)" }}>이모티콘 디자이너</div>
+                <div className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>국비지원 양성과정</div>
+              </div>
             </div>
-            <nav className="hidden md:flex items-center gap-6">
-              {navLinks.map((l) => (
-                <a key={l.label} href={l.href} className="text-sm font-medium transition-colors" style={{ color: "var(--text-secondary)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-primary)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-secondary)")}
-                >{l.label}</a>
+            <nav className="hidden md:flex items-center gap-7">
+              {[["혜택", "#benefits"], ["커리큘럼", "#curriculum"], ["도구", "#tools"], ["일정", "#schedule"], ["FAQ", "#faq"]].map(([l, h]) => (
+                <a key={l} href={h} className="text-sm font-semibold transition-colors"
+                  style={{ color: "var(--text-secondary)", textDecoration: "none" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "var(--text-secondary)")}>{l}</a>
               ))}
             </nav>
-            <a href="https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1" target="_blank" rel="noopener noreferrer" className="btn-primary hidden md:inline-flex" style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem" }}>
+            <a href={APPLY_LINK} target="_blank" rel="noopener noreferrer" className="btn-nav hidden md:inline-flex">
               지금 신청하기
             </a>
-            <button className="md:hidden p-2" onClick={() => setMenuOpen(!menuOpen)} style={{ color: "var(--text-primary)" }}>
-              <div className="w-5 h-0.5 mb-1.5 transition-all" style={{ backgroundColor: "currentColor", transform: menuOpen ? "rotate(45deg) translate(4px,4px)" : "none" }} />
-              <div className="w-5 h-0.5 mb-1.5" style={{ backgroundColor: "currentColor", opacity: menuOpen ? 0 : 1 }} />
-              <div className="w-5 h-0.5 transition-all" style={{ backgroundColor: "currentColor", transform: menuOpen ? "rotate(-45deg) translate(4px,-4px)" : "none" }} />
+            <button className="md:hidden p-2 rounded-lg" onClick={() => setMenuOpen(!menuOpen)}
+              style={{ color: "var(--text-primary)", background: "transparent", border: "none" }}>
+              <div className="space-y-1.5">
+                <div className="w-6 h-0.5 transition-all" style={{ backgroundColor: "currentColor", transform: menuOpen ? "rotate(45deg) translate(0,8px)" : "none" }} />
+                <div className="w-6 h-0.5" style={{ backgroundColor: "currentColor", opacity: menuOpen ? 0 : 1 }} />
+                <div className="w-6 h-0.5 transition-all" style={{ backgroundColor: "currentColor", transform: menuOpen ? "rotate(-45deg) translate(0,-8px)" : "none" }} />
+              </div>
             </button>
           </div>
           {menuOpen && (
-            <div className="md:hidden py-4 border-t" style={{ borderColor: "var(--border)" }}>
-              {navLinks.map((l) => (
-                <a key={l.label} href={l.href} className="block py-3 text-sm font-medium" style={{ color: "var(--text-secondary)" }} onClick={() => setMenuOpen(false)}>{l.label}</a>
+            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+              className="md:hidden py-4 border-t" style={{ borderColor: "var(--ice-border)" }}>
+              {[["혜택", "#benefits"], ["커리큘럼", "#curriculum"], ["도구", "#tools"], ["일정", "#schedule"], ["FAQ", "#faq"]].map(([l, h]) => (
+                <a key={l} href={h} className="block py-3 text-sm font-semibold" style={{ color: "var(--text-secondary)", textDecoration: "none" }} onClick={() => setMenuOpen(false)}>{l}</a>
               ))}
-              <a href="https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1" target="_blank" rel="noopener noreferrer" className="btn-primary mt-3 w-full justify-center">지금 신청하기</a>
-            </div>
+              <a href={APPLY_LINK} target="_blank" rel="noopener noreferrer" className="btn-cta mt-4 w-full" style={{ padding: "0.875rem 1.5rem" }}>지금 신청하기</a>
+            </motion.div>
           )}
         </div>
       </header>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
-        {/* Background layers */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #0A0E1A 0%, #141828 50%, #0F1420 100%)" }} />
-        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(ellipse 60% 50% at 70% 50%, rgba(255,92,58,0.08) 0%, transparent 70%), radial-gradient(ellipse 40% 60% at 30% 80%, rgba(245,166,35,0.06) 0%, transparent 60%)" }} />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+      <section className="relative overflow-hidden" style={{ minHeight: "100svh", display: "flex", alignItems: "center" }}>
+        {/* Deep background */}
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 60% at 65% 40%, rgba(255,77,46,0.07) 0%, transparent 60%), radial-gradient(ellipse 50% 70% at 20% 80%, rgba(245,166,35,0.05) 0%, transparent 60%), linear-gradient(160deg, #060810 0%, #0A0E1A 40%, #060810 100%)" }} />
+        {/* Subtle grid */}
+        <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "linear-gradient(rgba(232,240,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(232,240,255,1) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
 
-        <div className="container relative z-10 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Copy */}
-            <div>
-              {/* Deadline + Start date badges */}
-              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-                className="flex flex-wrap items-center gap-2 mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
-                  style={{ background: "rgba(255,92,58,0.1)", border: "1px solid rgba(255,92,58,0.25)", color: "var(--coral-light)" }}>
-                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "var(--coral)" }} />
-                  접수 마감: 2026. 4. 20(월) 18시
-                </div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
-                  style={{ background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.3)", color: "var(--gold)" }}>
-                  🚀 개강: 2026. 4. 27(월)
-                </div>
+        <div className="container relative z-10 py-24 lg:py-32">
+          <div className="grid lg:grid-cols-[1fr_1fr] gap-16 items-center">
+
+            {/* LEFT */}
+            <motion.div style={{ opacity: heroOpacity, y: heroY }}>
+              {/* Badges row */}
+              <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+                className="flex flex-wrap gap-2 mb-7">
+                <span className="badge-coral">
+                  <span className="w-1.5 h-1.5 rounded-full mr-1.5 animate-pulse" style={{ backgroundColor: "var(--coral)", display: "inline-block" }} />
+                  접수 마감 D-{Math.max(0, Math.ceil((new Date("2026-04-20T18:00:00+09:00").getTime() - Date.now()) / 86400000))}
+                </span>
+                <span className="badge-gold">🚀 4월 27일 개강</span>
+                <span className="badge-ice">강북여성인력개발센터</span>
               </motion.div>
 
-              <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-                className="display-xl mb-4" style={{ color: "var(--text-primary)" }}>
-                수강료 <span className="gradient-coral">0원</span>으로<br />
-                이모티콘 작가가<br />
-                <span className="gradient-gold">되세요!</span>
-              </motion.h1>
+              {/* Headline */}
+              <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }}>
+                <h1 className="display-hero mb-5" style={{ color: "var(--text-primary)" }}>
+                  수강료<br />
+                  <span className="gradient-coral">0원</span>으로<br />
+                  <span className="shimmer-text">이모티콘 작가</span><br />
+                  <span style={{ color: "var(--text-primary)" }}>되기</span>
+                </h1>
+              </motion.div>
 
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25 }}
-                className="body-lg mb-8 max-w-lg">
+              {/* Sub */}
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+                className="body-xl mb-8 max-w-md">
                 Adobe Photoshop · Illustrator + AI 활용<br />
-                <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>캐릭터 이모티콘 디자이너 양성과정</strong><br />
-                강북여성인력개발센터 · 국비지원 직업훈련 · 2026.4.27 개강
+                <strong style={{ color: "var(--text-primary)", fontWeight: 800 }}>캐릭터 이모티콘 디자이너 양성과정</strong>
               </motion.p>
 
-              {/* Tag pills */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
-                className="flex flex-wrap gap-2 mb-8">
+              {/* Benefit pills */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
+                className="flex flex-wrap gap-2 mb-9">
                 {["수강료 전액 무료", "매월 10만원 수당", "Adobe 정규 교육", "AI 활용 수업", "이모티콘 작가 등록"].map((t) => (
-                  <span key={t} className="badge-coral">{t}</span>
+                  <span key={t} className="badge-ice">{t}</span>
                 ))}
               </motion.div>
 
-              {/* CTA buttons */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
+              {/* CTA */}
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
                 className="flex flex-wrap gap-3 mb-10">
-                <a href="https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1" target="_blank" rel="noopener noreferrer" className="btn-primary text-base" style={{ padding: "1rem 2rem" }}>
-                  지금 바로 신청하기 →
+                <a href={APPLY_LINK} target="_blank" rel="noopener noreferrer" className="btn-cta" style={{ fontSize: "1.0625rem", padding: "1.125rem 2.25rem" }}>
+                  무료로 신청하기 →
                 </a>
-                <a href="tel:070-4048-6575" className="btn-outline text-base">
+                <a href="tel:070-4048-6575" className="btn-ghost">
                   📞 070-4048-6575
                 </a>
               </motion.div>
 
               {/* Countdown */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.55 }}>
-                <p className="section-label mb-3">마감까지 남은 시간</p>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
+                <div className="label-sm mb-3">마감까지 남은 시간</div>
                 <Countdown />
               </motion.div>
-            </div>
+            </motion.div>
 
-            {/* Right: Hero image */}
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
+            {/* RIGHT — Hero image */}
+            <motion.div initial={{ opacity: 0, scale: 0.92, x: 40 }} animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="relative hidden lg:block">
-              <div className="relative rounded-2xl overflow-hidden" style={{ boxShadow: "0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)" }}>
-                <img src={HERO_IMG} alt="캐릭터 이모티콘 디자이너 수업" className="w-full object-cover" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(10,14,26,0.6) 0%, transparent 50%)" }} />
+              {/* Glow behind image */}
+              <div className="absolute inset-0 rounded-3xl" style={{ background: "radial-gradient(ellipse at center, rgba(255,77,46,0.15) 0%, transparent 70%)", transform: "scale(1.1)", filter: "blur(40px)" }} />
+              <div className="relative rounded-3xl overflow-hidden" style={{ boxShadow: "0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px var(--ice-border)" }}>
+                <img src={HERO_IMG} alt="캐릭터 이모티콘 디자이너 수업" className="w-full object-cover" style={{ display: "block" }} />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(6,8,16,0.7) 0%, rgba(6,8,16,0.1) 40%, transparent 70%)" }} />
               </div>
-              {/* Floating stat cards */}
-              <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                className="absolute -top-4 -left-4 card-glass px-4 py-3 rounded-xl">
-                <div className="text-xs text-muted-text mb-1 font-medium">국비지원</div>
-                <div className="text-2xl font-black text-coral">0원</div>
-              </motion.div>
-              <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut", delay: 0.5 }}
-                className="absolute -bottom-4 -right-4 card-glass px-4 py-3 rounded-xl">
-                <div className="text-xs text-muted-text mb-1 font-medium">훈련수당</div>
-                <div className="text-2xl font-black text-gold">월 10만원</div>
-              </motion.div>
+              {/* Floating cards */}
+              <div className="float-a absolute -top-5 -left-6 card-glass px-4 py-3 rounded-2xl" style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.4)" }}>
+                <div className="label-sm mb-1">국비지원</div>
+                <div className="text-3xl font-black" style={{ color: "var(--coral)" }}>0원</div>
+              </div>
+              <div className="float-b absolute -bottom-5 -right-6 card-glass px-4 py-3 rounded-2xl" style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.4)" }}>
+                <div className="label-sm mb-1">훈련수당</div>
+                <div className="text-3xl font-black" style={{ color: "var(--gold)" }}>월 10만원</div>
+              </div>
+              <div className="float-a absolute top-1/2 -right-8 card-glass px-3 py-2 rounded-xl" style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.4)", animationDelay: "1s" }}>
+                <div className="text-xs font-bold mb-0.5" style={{ color: "var(--text-muted)" }}>개강일</div>
+                <div className="text-sm font-black" style={{ color: "var(--text-primary)" }}>4월 27일</div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ── STATS BAR ──────────────────────────────────────────────────────── */}
-      <section style={{ backgroundColor: "var(--navy-mid)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
-        <div className="container py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x" style={{ "--tw-divide-opacity": 1 } as React.CSSProperties}>
+      {/* ── MARQUEE STRIP ──────────────────────────────────────────────────── */}
+      <div className="overflow-hidden py-4 relative" style={{ borderTop: "1px solid var(--ice-border)", borderBottom: "1px solid var(--ice-border)", backgroundColor: "var(--navy-mid)" }}>
+        <div className="marquee-track flex gap-6 w-max">
+          {marqueeTags.map((t, i) => (
+            <div key={i} className="flex items-center gap-2 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: i % 2 === 0 ? "var(--coral)" : "var(--gold)" }} />
+              <span className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>{t}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── STATS ──────────────────────────────────────────────────────────── */}
+      <section style={{ backgroundColor: "var(--navy-deep)" }}>
+        <div className="container py-16">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { num: 0, suffix: "원", label: "수강료 전액 지원" },
-              { num: 10, suffix: "만원", label: "매월 훈련수당" },
-              { num: 240, suffix: "시간", label: "전문 교육과정" },
-              { num: 60, suffix: "일", label: "집중 훈련기간" },
+              { num: 0, suffix: "원", label: "수강료 전액 지원", color: "var(--coral)", icon: "₩" },
+              { num: 10, suffix: "만원", label: "매월 훈련수당 지급", color: "var(--gold)", icon: "💰" },
+              { num: 240, suffix: "시간", label: "전문 교육과정", color: "#5BA4F5", icon: "⏱" },
+              { num: 60, suffix: "일", label: "집중 훈련기간", color: "#7ED4A4", icon: "📅" },
             ].map((s, i) => (
-              <FadeUp key={i} delay={i * 0.1} className="text-center px-6">
-                <div className="stat-number gradient-coral">
-                  <AnimatedNumber target={s.num} suffix={s.suffix} />
+              <FadeUp key={i} delay={i * 0.08}>
+                <div className="card-stat">
+                  <div className="text-2xl mb-2">{s.icon}</div>
+                  <div className="stat-number mb-1" style={{ color: s.color }}>
+                    <AnimatedNumber target={s.num} suffix={s.suffix} />
+                  </div>
+                  <div className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>{s.label}</div>
                 </div>
-                <div className="text-sm mt-1 font-medium" style={{ color: "var(--text-secondary)" }}>{s.label}</div>
               </FadeUp>
             ))}
           </div>
@@ -293,60 +323,83 @@ export default function Home() {
       </section>
 
       {/* ── BENEFITS ───────────────────────────────────────────────────────── */}
-      <section id="benefits" className="section-py" style={{ backgroundColor: "var(--navy)" }}>
+      <section id="benefits" className="section-py" style={{ backgroundColor: "var(--obsidian)" }}>
         <div className="container">
-          <FadeUp className="text-center mb-14">
-            <p className="section-label mb-3">왜 이 과정인가요?</p>
-            <h2 className="display-md" style={{ color: "var(--text-primary)" }}>
-              이런 혜택, <span className="gradient-coral">다른 곳에 없습니다</span>
+          <FadeUp className="mb-16">
+            <div className="label-sm mb-4">왜 이 과정인가요?</div>
+            <h2 className="display-lg" style={{ color: "var(--text-primary)", maxWidth: "640px" }}>
+              이런 혜택,<br /><span className="gradient-coral">다른 곳에 없습니다</span>
             </h2>
           </FadeUp>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {benefits.map((b, i) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {[
+              { icon: "🎓", title: "수강료 0원", desc: "전액 국비지원으로 본인 부담금 없음", color: "var(--coral)", glow: "rgba(255,77,46,0.15)" },
+              { icon: "💰", title: "매월 10만원", desc: "월 80% 이상 출석 시 훈련수당 지급", color: "var(--gold)", glow: "rgba(245,166,35,0.15)" },
+              { icon: "🏆", title: "취업성공수당", desc: "수료 후 6개월 내 취업 시 추가 지급", color: "#7ED4A4", glow: "rgba(126,212,164,0.15)" },
+              { icon: "🎨", title: "Adobe 정규 교육", desc: "포토샵·일러스트 업계 표준 툴 정규 수업", color: "#5BA4F5", glow: "rgba(91,164,245,0.15)" },
+            ].map((b, i) => (
               <FadeUp key={i} delay={i * 0.1}>
-                <div className="card-dark p-6 h-full">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4"
-                    style={{ backgroundColor: `${b.color}18`, border: `1px solid ${b.color}30` }}>
+                <div className="card-premium p-6 h-full" style={{ background: `linear-gradient(145deg, ${b.glow} 0%, var(--navy-card) 100%)` }}>
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5"
+                    style={{ backgroundColor: `${b.glow}`, border: `1px solid ${b.color}30` }}>
                     {b.icon}
                   </div>
-                  <div className="text-xs font-semibold mb-1" style={{ color: "var(--text-muted)", letterSpacing: "0.08em" }}>{b.label}</div>
-                  <div className="text-3xl font-black mb-1" style={{ color: b.color }}>{b.value}</div>
-                  <div className="text-sm" style={{ color: "var(--text-secondary)" }}>{b.sub}</div>
+                  <h3 className="text-xl font-black mb-2" style={{ color: b.color }}>{b.title}</h3>
+                  <p className="body-md">{b.desc}</p>
                 </div>
               </FadeUp>
             ))}
           </div>
 
-
+          {/* Big CTA banner */}
+          <FadeUp delay={0.3}>
+            <div className="relative rounded-3xl overflow-hidden p-8 md:p-12"
+              style={{ background: "linear-gradient(135deg, rgba(255,77,46,0.12) 0%, rgba(245,166,35,0.08) 100%)", border: "1px solid rgba(255,77,46,0.2)" }}>
+              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url(${BG_TEX})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                  <div className="label-sm mb-2">지금 바로 시작하세요</div>
+                  <h3 className="display-md" style={{ color: "var(--text-primary)" }}>
+                    수강료 <span className="gradient-coral">0원</span> + 매월 <span className="gradient-gold">10만원</span>
+                  </h3>
+                  <p className="body-lg mt-2">2026년 4월 27일 개강 · 접수 마감 4월 20일(월) 18시</p>
+                </div>
+                <a href={APPLY_LINK} target="_blank" rel="noopener noreferrer" className="btn-cta flex-shrink-0" style={{ padding: "1.125rem 2.5rem", fontSize: "1.0625rem" }}>
+                  무료 신청하기 →
+                </a>
+              </div>
+            </div>
+          </FadeUp>
         </div>
       </section>
 
       {/* ── TOOLS ──────────────────────────────────────────────────────────── */}
       <section id="tools" className="section-py" style={{ backgroundColor: "var(--navy-mid)" }}>
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             <FadeUp>
-              <p className="section-label mb-3">사용 툴</p>
-              <h2 className="display-md mb-4" style={{ color: "var(--text-primary)" }}>
-                어도비 + AI로<br />
-                <span className="gradient-coral">전문가처럼!</span>
+              <div className="label-sm mb-4">사용 툴</div>
+              <h2 className="display-lg mb-5" style={{ color: "var(--text-primary)" }}>
+                어도비 + AI로<br /><span className="gradient-coral">전문가처럼!</span>
               </h2>
-              <p className="body-lg mb-8">
-                업계 표준 <strong style={{ color: "var(--text-primary)" }}>Adobe Photoshop & Illustrator</strong>로 전문 디자인 스킬을 쌓고, 최신 AI 도구로 창작 속도를 높이세요.
+              <p className="body-xl mb-10">
+                업계 표준 <strong style={{ color: "var(--text-primary)" }}>Adobe Photoshop & Illustrator</strong>로 전문 스킬을 쌓고, 최신 AI 도구로 창작 속도를 10배 높이세요.
               </p>
-              <div className="grid grid-cols-1 gap-3">
+              <div className="space-y-3">
                 {tools.map((t, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                    className="flex items-center gap-4 p-4 rounded-xl"
-                    style={{ backgroundColor: t.bg, border: `1px solid ${t.color}25` }}>
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center font-black text-sm flex-shrink-0"
-                      style={{ backgroundColor: t.color, color: "white" }}>
-                      {t.name.slice(0, 2)}
+                  <motion.div key={i} initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 cursor-default"
+                    style={{ backgroundColor: t.bg, border: `1px solid ${t.color}20` }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${t.color}50`; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = `${t.color}20`; }}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0"
+                      style={{ backgroundColor: t.color, color: "#fff", fontSize: typeof t.abbr === "string" && t.abbr.length > 2 ? "1.25rem" : "0.875rem" }}>
+                      {t.abbr}
                     </div>
                     <div>
-                      <div className="font-bold text-sm" style={{ color: t.color }}>{t.name}</div>
+                      <div className="font-bold text-sm mb-0.5" style={{ color: t.color }}>{t.name}</div>
                       <div className="text-sm" style={{ color: "var(--text-secondary)" }}>{t.desc}</div>
                     </div>
                   </motion.div>
@@ -356,15 +409,16 @@ export default function Home() {
 
             <FadeUp delay={0.2}>
               <div className="relative">
-                <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)", boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
+                <div className="absolute inset-0 rounded-3xl" style={{ background: "radial-gradient(ellipse at center, rgba(255,77,46,0.12) 0%, transparent 70%)", transform: "scale(1.05)", filter: "blur(30px)" }} />
+                <div className="relative rounded-3xl overflow-hidden" style={{ border: "1px solid var(--ice-border)", boxShadow: "0 24px 80px rgba(0,0,0,0.5)" }}>
                   <img src={HERO_IMG} alt="어도비 + AI 수업" className="w-full object-cover" />
                 </div>
-                <div className="absolute -bottom-5 -left-5 card-glass p-4 rounded-xl">
-                  <div className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>배울 수 있는 툴</div>
+                <div className="absolute -bottom-6 -left-6 card-glass p-4 rounded-2xl" style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}>
+                  <div className="label-sm mb-2">배울 수 있는 툴</div>
                   <div className="flex gap-2">
-                    {["Ps", "Ai", "AI"].map((t, i) => (
-                      <span key={i} className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black"
-                        style={{ backgroundColor: ["#31A8FF", "#FF9A00", "#B47FFF"][i], color: "white" }}>{t}</span>
+                    {[{ l: "Ps", c: "#31A8FF" }, { l: "Ai", c: "#FF9A00" }, { l: "AI", c: "#B47FFF" }].map((t, i) => (
+                      <span key={i} className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black"
+                        style={{ backgroundColor: t.c, color: "#fff" }}>{t.l}</span>
                     ))}
                   </div>
                 </div>
@@ -375,87 +429,92 @@ export default function Home() {
       </section>
 
       {/* ── CURRICULUM ─────────────────────────────────────────────────────── */}
-      <section id="curriculum" className="section-py" style={{ backgroundColor: "var(--navy)" }}>
+      <section id="curriculum" className="section-py" style={{ backgroundColor: "var(--obsidian)" }}>
         <div className="container">
-          <FadeUp className="text-center mb-14">
-            <p className="section-label mb-3">교육 커리큘럼</p>
-            <h2 className="display-md" style={{ color: "var(--text-primary)" }}>
-              기초부터 <span className="gradient-coral">출시까지</span>
+          <FadeUp className="mb-16">
+            <div className="label-sm mb-4">교육 커리큘럼</div>
+            <h2 className="display-lg" style={{ color: "var(--text-primary)", maxWidth: "560px" }}>
+              기초부터 <span className="gradient-coral">출시까지</span><br />8단계 완성
             </h2>
-            <p className="body-md mt-3 max-w-lg mx-auto">240시간 체계적인 전문 교육과정</p>
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
+            <p className="body-lg mt-4 max-w-lg">240시간 체계적인 전문 교육과정</p>
+            <div className="flex flex-wrap gap-2 mt-5">
               {["Adobe Photoshop", "Adobe Illustrator", "AI 생성 툴"].map((t, i) => (
-                <span key={i} className={["badge-blue", "badge-gold", "badge-coral"][i]}>{t}</span>
+                <span key={i} className={["badge-ice", "badge-gold", "badge-coral"][i]}>{t}</span>
               ))}
             </div>
           </FadeUp>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {curriculum.map((item, i) => (
-              <FadeUp key={i} delay={i * 0.07}>
-                <div className="card-dark p-5 h-full group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-xs font-black px-2 py-0.5 rounded" style={{ backgroundColor: "rgba(255,92,58,0.15)", color: "var(--coral)" }}>
+              <FadeUp key={i} delay={i * 0.06}>
+                <motion.div className="card-premium p-6 h-full"
+                  whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-black px-2.5 py-1 rounded-lg"
+                      style={{ backgroundColor: "rgba(255,77,46,0.12)", color: "var(--coral)", letterSpacing: "0.05em" }}>
                       STEP {item.step}
                     </span>
-                    <span className="text-xl">{item.icon}</span>
+                    <span className="text-2xl">{item.icon}</span>
                   </div>
-                  <h3 className="font-bold text-base mb-2" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
+                  <h3 className="font-black text-base mb-2" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
                   <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
-                </div>
+                </motion.div>
               </FadeUp>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── TARGET AUDIENCE ────────────────────────────────────────────────── */}
-      <section className="section-py" style={{ backgroundColor: "var(--navy-mid)" }}>
+      {/* ── TARGET + SCHEDULE ──────────────────────────────────────────────── */}
+      <section id="schedule" className="section-py" style={{ backgroundColor: "var(--navy-mid)" }}>
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-16">
+
+            {/* Target */}
             <FadeUp>
-              <p className="section-label mb-3">이런 분께 추천</p>
-              <h2 className="display-md mb-6" style={{ color: "var(--text-primary)" }}>
+              <div className="label-sm mb-4">이런 분께 추천</div>
+              <h2 className="display-md mb-8" style={{ color: "var(--text-primary)" }}>
                 당신을 위한<br /><span className="gradient-coral">과정입니다</span>
               </h2>
               <div className="space-y-3">
                 {[
-                  "캐릭터 디자이너로 취·창업을 희망하는 여성",
-                  "포토샵·일러스트를 제대로 배우고 싶은 분",
-                  "AI 도구로 창작 효율을 높이고 싶은 분",
-                  "이모티콘 작가로 부업·창업을 꿈꾸는 분",
-                  "어도비 디자인 경력자 (우대)",
-                  "대한민국 거주 여성이라면 누구나 가능",
+                  { icon: "👩‍🎨", text: "캐릭터 디자이너로 취·창업을 희망하는 여성" },
+                  { icon: "💻", text: "포토샵·일러스트를 제대로 배우고 싶은 분" },
+                  { icon: "🤖", text: "AI 도구로 창작 효율을 높이고 싶은 분" },
+                  { icon: "💫", text: "이모티콘 작가로 부업·창업을 꿈꾸는 분" },
+                  { icon: "⭐", text: "어도비 디자인 경력자 (우대)" },
+                  { icon: "🇰🇷", text: "대한민국 거주 여성이라면 누구나 가능" },
                 ].map((t, i) => (
-                  <div key={i} className="flex items-start gap-3 p-4 rounded-xl" style={{ backgroundColor: "var(--navy-card)", border: "1px solid var(--border)" }}>
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{ backgroundColor: "rgba(255,92,58,0.2)", color: "var(--coral)" }}>
-                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>{t}</span>
-                  </div>
+                  <motion.div key={i} initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }} transition={{ delay: i * 0.08 }}
+                    className="flex items-center gap-4 p-4 rounded-2xl"
+                    style={{ backgroundColor: "var(--navy-card)", border: "1px solid var(--ice-border)" }}>
+                    <span className="text-xl flex-shrink-0">{t.icon}</span>
+                    <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>{t.text}</span>
+                  </motion.div>
                 ))}
               </div>
             </FadeUp>
 
+            {/* Schedule */}
             <FadeUp delay={0.2}>
-              <p className="section-label mb-3">교육 일정</p>
-              <h2 className="display-md mb-6" style={{ color: "var(--text-primary)" }}>
-                신청 정보
-              </h2>
+              <div className="label-sm mb-4">교육 일정</div>
+              <h2 className="display-md mb-6" style={{ color: "var(--text-primary)" }}>신청 정보</h2>
 
-              {/* 개강일 강조 카드 */}
-              <div className="mb-5 p-5 rounded-2xl" style={{ background: "linear-gradient(135deg, rgba(245,166,35,0.15) 0%, rgba(255,92,58,0.1) 100%)", border: "1px solid rgba(245,166,35,0.35)" }}>
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="text-2xl">🚀</span>
-                  <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "var(--gold)" }}>개강일</span>
+              {/* Start date highlight */}
+              <div className="relative p-6 rounded-3xl mb-6 overflow-hidden"
+                style={{ background: "linear-gradient(135deg, rgba(245,166,35,0.15) 0%, rgba(255,77,46,0.1) 100%)", border: "1px solid rgba(245,166,35,0.3)" }}>
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10"
+                  style={{ background: "var(--gold)", filter: "blur(40px)", transform: "translate(30%, -30%)" }} />
+                <div className="relative z-10">
+                  <div className="label-sm mb-2" style={{ color: "var(--gold)" }}>개강일</div>
+                  <div className="text-4xl font-black mb-1" style={{ color: "var(--text-primary)" }}>2026년 4월 27일</div>
+                  <div className="text-base font-semibold" style={{ color: "var(--text-secondary)" }}>월요일 · 월~금 13:30~17:30 · 60일 · 240시간</div>
                 </div>
-                <div className="text-3xl font-black" style={{ color: "var(--text-primary)" }}>2026년 4월 27일 (월)</div>
-                <div className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>월~금 오후 1:30 ~ 5:30 · 60일 · 240시간</div>
               </div>
 
-              {/* 타임라인 */}
-              <div className="relative pl-6 space-y-0" style={{ borderLeft: "2px solid var(--border)" }}>
+              {/* Timeline */}
+              <div className="relative pl-6" style={{ borderLeft: "2px solid var(--navy-border)" }}>
                 {[
                   { icon: "📋", label: "접수 마감", value: "2026. 4. 20(월) 18시까지", highlight: true },
                   { icon: "📁", label: "접수 방법", value: "방문 접수 또는 이메일 접수 (구비서류 제출)", highlight: false },
@@ -464,21 +523,21 @@ export default function Home() {
                   { icon: "🏁", label: "선발 방법", value: "서류 전형(1차 합격) 후 면접 전형", highlight: false },
                   { icon: "📅", label: "교육 기간", value: "2026. 4. 27 ~ 7. 23 (60일, 240시간)", highlight: false },
                 ].map((r, i) => (
-                  <div key={i} className="relative flex gap-4 py-3.5" style={{ borderBottom: i < 5 ? "1px solid var(--border)" : "none" }}>
-                    <div className="absolute -left-[1.85rem] w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: r.highlight ? "var(--coral)" : "var(--navy-card)", border: `2px solid ${r.highlight ? "var(--coral)" : "var(--border)"}`, top: "1rem" }} />
-                    <span className="text-base flex-shrink-0 mt-0.5">{r.icon}</span>
+                  <div key={i} className="relative flex gap-4 py-4" style={{ borderBottom: i < 5 ? "1px solid var(--ice-border)" : "none" }}>
+                    <div className="timeline-dot absolute -left-[1.9375rem]"
+                      style={{ backgroundColor: r.highlight ? "var(--coral)" : "var(--navy-card)", border: `2px solid ${r.highlight ? "var(--coral)" : "var(--navy-border)"}`, top: "1.25rem" }} />
+                    <span className="text-base flex-shrink-0">{r.icon}</span>
                     <div>
-                      <div className="text-xs font-bold mb-0.5" style={{ color: r.highlight ? "var(--coral)" : "var(--text-muted)", letterSpacing: "0.05em" }}>{r.label}</div>
+                      <div className="text-xs font-bold mb-0.5" style={{ color: r.highlight ? "var(--coral)" : "var(--text-muted)", letterSpacing: "0.06em" }}>{r.label}</div>
                       <div className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>{r.value}</div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-5 p-4 rounded-xl" style={{ backgroundColor: "rgba(255,92,58,0.08)", border: "1px solid rgba(255,92,58,0.2)" }}>
-                <p className="text-sm font-semibold mb-1" style={{ color: "var(--coral)" }}>제출 서류</p>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>이력서 1부 & 반명함 사진 2장 + 훈련신청서 및 구직신청서 (사무실 비치 및 강북센터 홈페이지 자료실)</p>
+              <div className="mt-5 p-4 rounded-2xl" style={{ backgroundColor: "rgba(255,77,46,0.07)", border: "1px solid rgba(255,77,46,0.18)" }}>
+                <p className="text-sm font-bold mb-1" style={{ color: "var(--coral)" }}>제출 서류</p>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>이력서 1부 & 반명함 사진 2장 + 훈련신청서 및 구직신청서</p>
               </div>
             </FadeUp>
           </div>
@@ -486,21 +545,25 @@ export default function Home() {
       </section>
 
       {/* ── FAQ ────────────────────────────────────────────────────────────── */}
-      <section id="faq" className="section-py" style={{ backgroundColor: "var(--navy)" }}>
+      <section id="faq" className="section-py" style={{ backgroundColor: "var(--obsidian)" }}>
         <div className="container max-w-3xl">
-          <FadeUp className="text-center mb-12">
-            <p className="section-label mb-3">자주 묻는 질문</p>
-            <h2 className="display-md" style={{ color: "var(--text-primary)" }}>FAQ</h2>
+          <FadeUp className="mb-14">
+            <div className="label-sm mb-4">자주 묻는 질문</div>
+            <h2 className="display-lg" style={{ color: "var(--text-primary)" }}>FAQ</h2>
           </FadeUp>
           <div className="space-y-3">
             {faqs.map((f, i) => (
-              <FadeUp key={i} delay={i * 0.1}>
-                <details className="card-dark p-6 group" style={{ cursor: "pointer" }}>
-                  <summary className="flex items-center justify-between font-semibold text-base list-none" style={{ color: "var(--text-primary)" }}>
+              <FadeUp key={i} delay={i * 0.08}>
+                <details className="group" style={{ background: "var(--navy-card)", border: "1px solid var(--ice-border)", borderRadius: "1.25rem", overflow: "hidden", cursor: "pointer" }}>
+                  <summary className="flex items-center justify-between p-6 font-bold text-base list-none gap-4"
+                    style={{ color: "var(--text-primary)" }}>
                     <span>Q. {f.q}</span>
-                    <span className="text-coral ml-4 flex-shrink-0 text-xl font-light">+</span>
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-lg font-light transition-transform"
+                      style={{ backgroundColor: "rgba(255,77,46,0.12)", color: "var(--coral)" }}>+</span>
                   </summary>
-                  <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{f.a}</p>
+                  <div className="px-6 pb-6 text-sm leading-relaxed" style={{ color: "var(--text-secondary)", borderTop: "1px solid var(--ice-border)", paddingTop: "1.25rem" }}>
+                    {f.a}
+                  </div>
                 </details>
               </FadeUp>
             ))}
@@ -509,39 +572,52 @@ export default function Home() {
       </section>
 
       {/* ── FINAL CTA ──────────────────────────────────────────────────────── */}
-      <section className="section-py relative overflow-hidden" style={{ backgroundColor: "var(--navy-mid)" }}>
-        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(ellipse 60% 80% at 50% 50%, rgba(255,92,58,0.08) 0%, transparent 70%)" }} />
+      <section className="section-py relative overflow-hidden" style={{ backgroundColor: "var(--navy-deep)" }}>
+        <div className="absolute inset-0" style={{ backgroundImage: `url(${BG_TEX})`, backgroundSize: "cover", backgroundPosition: "center", opacity: 0.08 }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 70% 80% at 50% 50%, rgba(255,77,46,0.1) 0%, transparent 70%)" }} />
         <div className="container relative z-10 text-center">
           <FadeUp>
-            <div className="badge-coral mx-auto mb-6 w-fit">마감 임박</div>
-            <h2 className="display-lg mb-4" style={{ color: "var(--text-primary)" }}>
+            <span className="badge-coral mx-auto mb-6 inline-flex">
+              <span className="w-1.5 h-1.5 rounded-full mr-1.5 animate-pulse" style={{ backgroundColor: "var(--coral)", display: "inline-block" }} />
+              마감 임박
+            </span>
+            <h2 className="display-hero mb-5" style={{ color: "var(--text-primary)" }}>
               지금 바로<br /><span className="gradient-coral">신청하세요!</span>
             </h2>
-            <p className="body-lg mb-8 max-w-lg mx-auto">
-              수강료 0원 + 매월 10만원 수당<br />
-              <strong style={{ color: "var(--text-primary)" }}>2026년 4월 20일(월) 18시 마감</strong>
+            <p className="body-xl mb-3 max-w-xl mx-auto">
+              수강료 0원 + 매월 10만원 수당
             </p>
+            <p className="text-lg font-bold mb-10" style={{ color: "var(--coral)" }}>
+              2026년 4월 20일(월) 18시 마감
+            </p>
+
+            {/* Countdown big */}
+            <div className="flex justify-center mb-10">
+              <Countdown />
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <a href="https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1" target="_blank" rel="noopener noreferrer" className="btn-primary text-lg" style={{ padding: "1.125rem 2.5rem" }}>
-                지금 바로 신청하기 →
+              <a href={APPLY_LINK} target="_blank" rel="noopener noreferrer" className="btn-cta" style={{ fontSize: "1.125rem", padding: "1.25rem 3rem" }}>
+                무료로 신청하기 →
               </a>
-              <a href="https://gangbuk.seoulwomanup.or.kr" target="_blank" rel="noopener noreferrer" className="btn-outline text-lg">
-                강북센터 홈페이지
+              <a href="tel:070-4048-6575" className="btn-ghost" style={{ padding: "1.25rem 2rem" }}>
+                📞 070-4048-6575
               </a>
             </div>
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-              womanjob1@naver.com · 강북여성인력개발센터
+              womanjob1@naver.com · 강북여성인력개발센터 · 국비지원 직업훈련
             </p>
           </FadeUp>
         </div>
       </section>
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
-      <footer style={{ backgroundColor: "var(--navy)", borderTop: "1px solid var(--border)" }}>
+      <footer style={{ backgroundColor: "var(--obsidian)", borderTop: "1px solid var(--ice-border)" }}>
         <div className="container py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm" style={{ background: "linear-gradient(135deg, var(--coral), var(--gold))" }}>✨</div>
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-black"
+                style={{ background: "linear-gradient(135deg, var(--coral), var(--gold))", color: "#fff" }}>✨</div>
               <span className="font-bold text-sm" style={{ color: "var(--text-secondary)" }}>캐릭터 이모티콘 디자이너 양성과정</span>
             </div>
             <p className="text-xs text-center" style={{ color: "var(--text-muted)" }}>

@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
 
 // ── Asset URLs ─────────────────────────────────────────────────────────────
 const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/114049990/2NXYXQdjjZ9aMNwZdApGUP/hero-premium-J8huvoh8sjJ5btxk8PPpCo.webp";
-const INSTRUCTOR_BADGE = "https://d2xsxph8kpxj0f.cloudfront.net/114049990/2NXYXQdjjZ9aMNwZdApGUP/instructor-badge-ACbJis3KWr8aEWfHqUDGRH.webp";
+
 
 // ── Animated Counter ───────────────────────────────────────────────────────
 function AnimatedNumber({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -162,7 +162,7 @@ export default function Home() {
                 >{l.label}</a>
               ))}
             </nav>
-            <a href="mailto:womanjob1@naver.com" className="btn-primary hidden md:inline-flex" style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem" }}>
+            <a href="https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1" target="_blank" rel="noopener noreferrer" className="btn-primary hidden md:inline-flex" style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem" }}>
               지금 신청하기
             </a>
             <button className="md:hidden p-2" onClick={() => setMenuOpen(!menuOpen)} style={{ color: "var(--text-primary)" }}>
@@ -176,7 +176,7 @@ export default function Home() {
               {navLinks.map((l) => (
                 <a key={l.label} href={l.href} className="block py-3 text-sm font-medium" style={{ color: "var(--text-secondary)" }} onClick={() => setMenuOpen(false)}>{l.label}</a>
               ))}
-              <a href="mailto:womanjob1@naver.com" className="btn-primary mt-3 w-full justify-center">지금 신청하기</a>
+              <a href="https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1" target="_blank" rel="noopener noreferrer" className="btn-primary mt-3 w-full justify-center">지금 신청하기</a>
             </div>
           )}
         </div>
@@ -227,11 +227,11 @@ export default function Home() {
               {/* CTA buttons */}
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
                 className="flex flex-wrap gap-3 mb-10">
-                <a href="mailto:womanjob1@naver.com" className="btn-primary text-base" style={{ padding: "1rem 2rem" }}>
+                <a href="https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1" target="_blank" rel="noopener noreferrer" className="btn-primary text-base" style={{ padding: "1rem 2rem" }}>
                   지금 바로 신청하기 →
                 </a>
-                <a href="tel:02-0000-0000" className="btn-outline text-base">
-                  📞 전화 문의
+                <a href="tel:070-4048-6575" className="btn-outline text-base">
+                  📞 070-4048-6575
                 </a>
               </motion.div>
 
@@ -312,17 +312,7 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Instructor card */}
-          <FadeUp delay={0.3} className="mt-8">
-            <div className="card-dark p-6 md:p-8 flex flex-col md:flex-row items-center gap-6">
-              <img src={INSTRUCTOR_BADGE} alt="강사 배지" className="w-24 h-24 rounded-full flex-shrink-0" style={{ border: "2px solid var(--border)" }} />
-              <div>
-                <div className="badge-coral mb-2">전문 강사진</div>
-                <h3 className="text-xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>크리메타쏭 대표 · 캔바 지국장 · AI 융합 마케팅 강사</h3>
-                <p className="body-md">생성형 AI, 캔바, 캐릭터 이모티콘 디자인 전문 강사. 초중학생·교사·기업 대상 강의 및 AI 아트 작가로 전시회 활동 중. 아바톡 크리퐁 · 수퍼톤 엠버서더.</p>
-              </div>
-            </div>
-          </FadeUp>
+
         </div>
       </section>
 
@@ -508,8 +498,8 @@ export default function Home() {
               <strong style={{ color: "var(--text-primary)" }}>2026년 4월 20일(월) 18시 마감</strong>
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <a href="mailto:womanjob1@naver.com" className="btn-primary text-lg" style={{ padding: "1.125rem 2.5rem" }}>
-                이메일로 신청하기 →
+              <a href="https://gangbuk.seoulwomanup.or.kr/gangbuk/common/bbs/selectBBS.do?bbs_seq=139728&bbs_code=D1106&bbs_type_code=10&bbs_type=&WrdNoticeAllValue=&reqUrl=&sch_type=&sch_text=%C2%A4tPage=1" target="_blank" rel="noopener noreferrer" className="btn-primary text-lg" style={{ padding: "1.125rem 2.5rem" }}>
+                지금 바로 신청하기 →
               </a>
               <a href="https://gangbuk.seoulwomanup.or.kr" target="_blank" rel="noopener noreferrer" className="btn-outline text-lg">
                 강북센터 홈페이지

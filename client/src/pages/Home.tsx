@@ -194,12 +194,18 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left: Copy */}
             <div>
-              {/* Deadline badge */}
+              {/* Deadline + Start date badges */}
               <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full text-sm font-semibold"
-                style={{ background: "rgba(255,92,58,0.1)", border: "1px solid rgba(255,92,58,0.25)", color: "var(--coral-light)" }}>
-                <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "var(--coral)" }} />
-                접수 마감: 2026년 4월 20일(월) 18시
+                className="flex flex-wrap items-center gap-2 mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
+                  style={{ background: "rgba(255,92,58,0.1)", border: "1px solid rgba(255,92,58,0.25)", color: "var(--coral-light)" }}>
+                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "var(--coral)" }} />
+                  접수 마감: 2026. 4. 20(월) 18시
+                </div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
+                  style={{ background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.3)", color: "var(--gold)" }}>
+                  🚀 개강: 2026. 4. 27(월)
+                </div>
               </motion.div>
 
               <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
@@ -437,22 +443,40 @@ export default function Home() {
               <h2 className="display-md mb-6" style={{ color: "var(--text-primary)" }}>
                 신청 정보
               </h2>
-              <div className="space-y-4">
+
+              {/* 개강일 강조 카드 */}
+              <div className="mb-5 p-5 rounded-2xl" style={{ background: "linear-gradient(135deg, rgba(245,166,35,0.15) 0%, rgba(255,92,58,0.1) 100%)", border: "1px solid rgba(245,166,35,0.35)" }}>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="text-2xl">🚀</span>
+                  <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "var(--gold)" }}>개강일</span>
+                </div>
+                <div className="text-3xl font-black" style={{ color: "var(--text-primary)" }}>2026년 4월 27일 (월)</div>
+                <div className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>월~금 오후 1:30 ~ 5:30 · 60일 · 240시간</div>
+              </div>
+
+              {/* 타임라인 */}
+              <div className="relative pl-6 space-y-0" style={{ borderLeft: "2px solid var(--border)" }}>
                 {[
-                  { label: "교육 기간", value: "2026. 4. 27 ~ 7. 23 (60일, 240시간)" },
-                  { label: "교육 시간", value: "월~금 13:30~17:30 / 주5일 1일 4시간" },
-                  { label: "접수 마감", value: "2026. 4. 20(월) 18시까지" },
-                  { label: "접수 방법", value: "방문 접수 또는 이메일 접수 (구비서류 제출)" },
-                  { label: "이메일", value: "womanjob1@naver.com" },
-                  { label: "선발 방법", value: "서류 전형(1차 합격) 후 면접 전형" },
+                  { icon: "📋", label: "접수 마감", value: "2026. 4. 20(월) 18시까지", highlight: true },
+                  { icon: "📁", label: "접수 방법", value: "방문 접수 또는 이메일 접수 (구비서류 제출)", highlight: false },
+                  { icon: "✉️", label: "이메일", value: "womanjob1@naver.com", highlight: false },
+                  { icon: "📞", label: "전화 문의", value: "070-4048-6575", highlight: false },
+                  { icon: "🏁", label: "선발 방법", value: "서류 전형(1차 합격) 후 면접 전형", highlight: false },
+                  { icon: "📅", label: "교육 기간", value: "2026. 4. 27 ~ 7. 23 (60일, 240시간)", highlight: false },
                 ].map((r, i) => (
-                  <div key={i} className="flex gap-4 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
-                    <div className="text-sm font-semibold w-24 flex-shrink-0" style={{ color: "var(--coral)" }}>{r.label}</div>
-                    <div className="text-sm" style={{ color: "var(--text-secondary)" }}>{r.value}</div>
+                  <div key={i} className="relative flex gap-4 py-3.5" style={{ borderBottom: i < 5 ? "1px solid var(--border)" : "none" }}>
+                    <div className="absolute -left-[1.85rem] w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: r.highlight ? "var(--coral)" : "var(--navy-card)", border: `2px solid ${r.highlight ? "var(--coral)" : "var(--border)"}`, top: "1rem" }} />
+                    <span className="text-base flex-shrink-0 mt-0.5">{r.icon}</span>
+                    <div>
+                      <div className="text-xs font-bold mb-0.5" style={{ color: r.highlight ? "var(--coral)" : "var(--text-muted)", letterSpacing: "0.05em" }}>{r.label}</div>
+                      <div className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>{r.value}</div>
+                    </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-6 p-4 rounded-xl" style={{ backgroundColor: "rgba(255,92,58,0.08)", border: "1px solid rgba(255,92,58,0.2)" }}>
+
+              <div className="mt-5 p-4 rounded-xl" style={{ backgroundColor: "rgba(255,92,58,0.08)", border: "1px solid rgba(255,92,58,0.2)" }}>
                 <p className="text-sm font-semibold mb-1" style={{ color: "var(--coral)" }}>제출 서류</p>
                 <p className="text-sm" style={{ color: "var(--text-secondary)" }}>이력서 1부 & 반명함 사진 2장 + 훈련신청서 및 구직신청서 (사무실 비치 및 강북센터 홈페이지 자료실)</p>
               </div>
